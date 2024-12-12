@@ -6,4 +6,4 @@ pattern() {
 
 python -u listen.py me | 
     stdbuf -oL grep -P "$(pattern 'hello|bye')" |
-    python forwarder.py destination
+    python forward.py destination
