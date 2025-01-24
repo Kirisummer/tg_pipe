@@ -1,21 +1,13 @@
-import json
+from argparse import ArgumentParser, RawTextHelpFormatter
 import re
 import sys
 
 from telethon.sync import TelegramClient
 from telethon.tl.types import PeerUser, PeerChat, PeerChannel
 
-from common import print, printerr, get_entity
+from common import add_api_arg, add_session_arg, print, printerr, get_entity
 from dataclasses import dataclass
 from typing import Union
-
-import api
-
-def get_peer(chat_str: str):
-    pattern = r'Peer(User|Channel)\((user|channel)_id=\d+\)'
-    if re.match(pattern, chat_str):
-        return eval(chat_str)
-    raise ValueError(f'Invalid peer format: {chat_str}')
 
 @dataclass
 class Message:
@@ -46,54 +38,31 @@ class Message:
             return None
         return Message(msg_id, peer_type(peer_id))
 
-INVALID_ARGS_ERR = 1
-TELEGRAM_ERR = 2
+parser = ArgumentParser(description='Forward messages to a Telegram channel, chat or user',
+                        epilog='Program reads tab-separated lists to identify the peer and message to forward\n' \
+                                '  - msg_id: int - id of message to forward\n' \
+                                '  - peer_type: (user|chat|channel) - type of a peer\n' \
+                                '  - peer_id: int - id of a peer\n' \
+                                'Further fields are ignored.',
+                        formatter_class=RawTextHelpFormatter)
+parser.add_argument('target',
+                    help='Telegram channel, char or user to forward messages to.' \
+                         'Can be usernames, phone numbers, chat names, etc.')
 
-def main(args):
-    if len(args) != 1:
-        return INVALID_ARGS_ERR
-    target = args[0]
+add_api_arg(parser)
+add_session_arg(parser)
+args = parser.parse_args()
 
-    with TelegramClient('forward', api.id, api.hash) as client:
-        try:
-            target_entity = get_entity(client, target)
-        except Exception as e:
-            printerr('Failed to find entity for `', target, '`')
-            return TELEGRAM_ERR
+with TelegramClient(args.session, args.api.id, args.api.hash) as client:
+    try:
+        target_entity = get_entity(client, args.target)
+    except Exception as e:
+        printerr('Failed to find entity for `', target, '`')
+        sys.exit(1)
 
-        # only parse valid lines
-        try:
-            for msg in filter(None, map(Message.parse, sys.stdin)):
-                client.forward_messages(target_entity, msg.id, msg.peer)
-        except KeyboardInterrupt:
-            return
-
-def print_help(prog_name):
-    printerr('Usage:')
-    printerr('  ', prog_name, ' <target>')
-    printerr('  ', prog_name, ' --help')
-    printerr()
-    printerr('Arguments:')
-    printerr('  target: something that can be used to identify a dialog: user id, phone number, chat name')
-    printerr('  --help: show this help')
-    printerr()
-    printerr('Input:')
-    printerr('  Program accepts lines with tab-separated fields:')
-    printerr('  - id: int - message id')
-    printerr('  - peer_type: str - user, channel, chat')
-    printerr('  - peer_id: int - id of user, channel or chat')
-    printerr('  - text: any - ignored')
-
-if __name__ == '__main__':
-    prog_name = sys.argv[0]
-    args = sys.argv[1:]
-
-    if '--help' in args:
-        print_help(prog_name)
-        sys.exit(INVALID_ARGS_ERR)
-    else:
-        ret = main(args)
-        if ret == INVALID_ARGS_ERR:
-            print_help(prog_name)
-        sys.exit(ret)
-
+    # only parse valid lines
+    try:
+        for msg in filter(None, map(Message.parse, sys.stdin)):
+            client.forward_messages(target_entity, msg.id, msg.peer)
+    except KeyboardInterrupt:
+        pass
