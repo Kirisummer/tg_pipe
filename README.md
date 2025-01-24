@@ -2,21 +2,21 @@
 
 ## Wha? Huh?
 1. Create a venv, enter it (optional):
-```
+```shell
 python -m venv venv
 source venv/bin/activate # for POSIX shells. If you have some other shell you know what to do better than I do
 venv\Scripts\activate # for Windows
 ```
 
 2. Install dependencies
-```
+```shell
 pip -r requirements.txt
 ```
 
 3. Get your API credentials from my.telegram.org and put them into `api.py`
 
-4. Prepare sessions for each script that needs to run at the same time: `
-```
+4. Prepare sessions for each script that needs to run at the same time:
+```shell
 python prepare_session.py --api api.py session_name.session
 ```
 Keep in mind that scripts can't use the same session or a copy of a session file.
