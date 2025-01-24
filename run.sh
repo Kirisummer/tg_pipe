@@ -9,7 +9,7 @@ pattern() {
 # Separate sessions are needed. Clients will eat each others events otherwise
 echo Preparing listen session
 python prepare_session.py --api api.py listen.session
-echo Creating forward session
+echo Preparing forward session
 python prepare_session.py --api api.py forward.session
 
 echo 'Starting The Pipe'

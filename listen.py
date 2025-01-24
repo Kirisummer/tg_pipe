@@ -8,12 +8,12 @@ from telethon.tl.types import PeerUser, PeerChannel, PeerChat
 
 from common import add_api_arg, add_session_arg, get_entity, print, printerr
 
-parser = ArgumentParser(description='Listen to Telegram sources (channels, users, chats) and print them'
+parser = ArgumentParser(description='Listen to Telegram sources (channels, users, chats) and print them',
                         epilog='Program prints tab-separated lists to identify the peer and message to forward\n' \
                                 '  - msg_id: int - id of message to forward\n' \
                                 '  - peer_type: (user|chat|channel) - type of a peer\n' \
                                 '  - peer_id: int - id of a peer\n' \
-                                '  - message text: str - text of the message'
+                                '  - message text: str - text of the message',
                         formatter_class=RawTextHelpFormatter)
 parser.add_argument('sources', nargs='+', help='Sources to listen. Can be usernames, phone numbers, chat names, etc.')
 add_api_arg(parser)
