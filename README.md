@@ -1,5 +1,19 @@
 # Telegram piping scripts
 
+[Donate to Ukraine!](https://war.ukraine.ua/donate/)
+
+## Why?
+Maybe you want to record some messages filtered by regex.
+
+Maybe you want to analyze messages in some chat in near-real time.
+
+Maybe you want to filter alerts from air raid alert channels in Telegram
+[because your neighbor is a bastard](https://war.ukraine.ua) and they
+[shower your home city with suicide drones and rockets](https://war.ukraine.ua/russia-war-crimes/#attacking-civilians-or-civilian-objects).
+
+Who knows
+
+
 ## Wha? Huh?
 1. Create a venv, enter it (optional):
 ```shell
@@ -23,6 +37,7 @@ Keep in mind that scripts can't use the same session or a copy of a session file
 Telegram probably sends only one event per session, and clients will steal each others events.
 
 5. Run the scripts ([example](run.sh))
+
 
 ## What scripts?
 
