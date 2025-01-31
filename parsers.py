@@ -1,9 +1,8 @@
-from functools import cache
+from collections.abc import Callable
 from importlib.util import spec_from_file_location, module_from_spec
 from pathlib import Path
-import sys
 
-# Types with validation for ArgumentParser arguments ###########################
+# File types ###########################################3#######################
 
 def regular_file(arg: str) -> Path:
     path = Path(arg)
@@ -31,6 +30,20 @@ def absent_file(arg: str) -> Path:
         return path
     raise ValueError('File exists')
 
+# Message formats ##############################################################
+
+def base64_fmt(s: str) -> str:
+    return b64encode(s.encode('utf8')).decode('ascii')
+
+def message_format(name: str) -> Callable[[str], str]:
+    match name:
+        case 'repr':
+            return repr
+        case 'base64':
+            return base64_fmt
+        case _:
+            raise ValueError(f'Invalid message format: {name}')
+
 # Functions that add arguments to ArgumentParser ###############################
 
 def add_api_arg(parser: 'ArgumentParser'):
@@ -39,30 +52,7 @@ def add_api_arg(parser: 'ArgumentParser'):
 def add_session_arg(parser: 'ArgumentParser'):
     parser.add_argument('-s', '--session', type=regular_file, help='Path to the session file', required=True)
 
-# Prints with custom defaults ##################################################
-
-_print = print
-
-def print(*args, sep='', **kwargs):
-    _print(*args, sep=sep, **kwargs)
-
-def printerr(*args, **kwargs):
-    print(*args, **kwargs, file=sys.stderr)
-
-# Telegram entity getter #######################################################
-
-@cache
-def get_entity(client: 'TelegramClient', name: str):
-    entity = None
-    try:
-        entity = client.get_input_entity(name)
-    except Exception:
-        printerr('Failed to get input entity for `', name, '`, searching for it in dialog list')
-        # search for first dialog with matching name
-        try:
-            entity = next(filter(lambda dialog: dialog.name == name, client.iter_dialogs()))
-        except StopIteration:
-            raise ValueError(f'Failed to find entity for `{name}`')
-    printerr('Found entity for `', name, '`: ', entity)
-    return entity
-
+def add_msg_format_arg(parser: 'ArgumentParser'):
+    parser.add_argument('-f', '--msg-fmt', type=message_format,
+                        choices=(repr, base64_fmt), default='repr',
+                        help='Format options for message text')

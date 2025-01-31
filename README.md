@@ -43,7 +43,9 @@ Telegram probably sends only one event per session, and clients will steal each 
 
 Scripts have built-in help available, try running them with `--help`.
 
-| Name       | Description                                                        |
-| ---------- | ------------------------------------------------------------------ |
-| listen.py  | Listen to Telegram sources (channels, users, chats) and print them |
-| forward.py | Forward messages to a Telegram channel, chat or user               |
+| Name                 | Description                                                        |
+| -------------------- | ------------------------------------------------------------------ |
+| `prepare_session.py` | Prepare session for other scripts                                  |
+| `listen.py`          | Listen to Telegram sources (channels, users, chats) and print them |
+| `forward.py`         | Forward messages to a Telegram channel, chat or user               |
+| `tail.py`            | Print text of last messages in Telegram channel, char or user      |

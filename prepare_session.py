@@ -1,10 +1,9 @@
 from argparse import ArgumentParser
 from pathlib import Path
-import sys
 
 from telethon.sync import TelegramClient
 
-from common import add_api_arg
+from parsers import add_api_arg
 
 parser = ArgumentParser(description='Create a session file or try to re-login')
 parser.add_argument('session', type=Path, help='Path to a session file')
