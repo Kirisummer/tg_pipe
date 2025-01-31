@@ -5,7 +5,7 @@ import sys
 
 from telethon.sync import TelegramClient
 
-from parsers import add_api_arg, add_session_arg
+from parsers import add_api_arg, add_session_arg, add_msg_format_arg
 from tg_utils import get_entity, unpack_peer
 from print import print, printerr
 
