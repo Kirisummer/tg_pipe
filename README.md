@@ -20,6 +20,8 @@ Who knows
 python -m venv venv
 source venv/bin/activate # for POSIX shells. If you have some other shell you know what to do better than I do
 venv\Scripts\activate # for Windows
+venv/Scripts/Activate.ps1 # Windows Powershell
+venv/bin/Activate.ps # Linux Powershell
 ```
 
 2. Install dependencies
